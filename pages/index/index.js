@@ -1,21 +1,18 @@
 // pages/index/index.js
 Page({
     data: {
-      rooms: [],           // 所有房间
-      selectedRoom: null,  // 选中的房间
-      roomIndex: 0,        // 选中索引
+      rooms: [],
+      selectedRoom: null,
+      roomIndex: 0,
       
-      // 电表相关
       electricityReading: '',
       electricityUsage: 0,
       electricityFee: 0,
       
-      // 水表相关
       waterReading: '',
       waterUsage: 0,
       waterFee: 0,
       
-      // 其他
       paymentMethod: '微信',
       notes: '',
       totalAmount: 0
@@ -29,29 +26,46 @@ Page({
       this.loadRooms()
     },
   
-    // 加载所有房间（按楼栋分组）
-    loadRooms() {
-      const db = wx.cloud.database()
-      db.collection('rooms').get().then(res => {
-        const rooms = res.data
-        // 按楼栋和房间号排序
-        rooms.sort((a, b) => {
-          if (a.building !== b.building) {
-            return a.building.localeCompare(b.building)
-          }
-          return a.roomNumber.localeCompare(b.roomNumber, 'zh', { numeric: true })
-        })
-        
-        this.setData({ 
-          rooms,
-          selectedRoom: rooms[0] || null
-        })
-        
-        if (rooms.length > 0) {
-          this.resetCalculation()
+    // 加载所有房间
+loadRooms() {
+    console.log('开始加载房间...')
+    const db = wx.cloud.database()
+    
+    db.collection('rooms').get().then(res => {
+      console.log('加载房间成功:', res)
+      const rooms = res.data || []
+      
+      // 按楼栋和房间号排序
+      rooms.sort((a, b) => {
+        if (a.building !== b.building) {
+          return a.building.localeCompare(b.building)
         }
+        return a.roomNumber.localeCompare(b.roomNumber, 'zh', { numeric: true })
       })
-    },
+      
+      this.setData({ 
+        rooms,
+        selectedRoom: rooms[0] || null
+      })
+      
+      if (rooms.length > 0) {
+        this.resetCalculation()
+      } else {
+        wx.showToast({ 
+          title: '暂无房间，请先添加', 
+          icon: 'none',
+          duration: 3000
+        })
+      }
+    }).catch(err => {
+      console.error('加载房间失败，详细错误:', err)
+      wx.showToast({ 
+        title: '加载失败: ' + (err.errMsg || '未知错误'), 
+        icon: 'none',
+        duration: 3000
+      })
+    })
+  },
   
     // 重置计算
     resetCalculation() {
@@ -85,7 +99,7 @@ Page({
       this.calculateTotal()
     },
   
-    // 计算电费
+    // 计算电费（电价1元/度）
     calculateElectricity() {
       if (!this.data.selectedRoom) return
       
@@ -95,7 +109,7 @@ Page({
       
       if (current >= last) {
         const usage = current - last
-        const fee = usage * (room.electricityPrice || 0.8)
+        const fee = usage * 1  // 电价1元/度
         
         this.setData({
           electricityUsage: usage,
@@ -120,7 +134,7 @@ Page({
       this.calculateTotal()
     },
   
-    // 计算水费
+    // 计算水费（水价3元/吨）
     calculateWater() {
       if (!this.data.selectedRoom) return
       
@@ -130,7 +144,7 @@ Page({
       
       if (current >= last) {
         const usage = current - last
-        const fee = usage * (room.waterPrice || 3.5)
+        const fee = usage * 3  // 水价3元/吨
         
         this.setData({
           waterUsage: usage,
@@ -174,14 +188,13 @@ Page({
   
       const room = this.data.selectedRoom
       
-      // 至少输入一个读数
       if (!this.data.electricityReading && !this.data.waterReading) {
         wx.showToast({ title: '请至少输入一个读数', icon: 'none' })
         return
       }
   
       const now = new Date()
-      const readingDate = now.toISOString().split('T')[0]
+      const readingDate = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')}`
       
       const record = {
         roomId: room._id,
@@ -190,13 +203,11 @@ Page({
         
         readingDate: readingDate,
         
-        // 电表
         lastElectricityReading: room.lastElectricityReading || 0,
         electricityReading: Number(this.data.electricityReading) || 0,
         electricityUsage: this.data.electricityUsage,
         electricityFee: this.data.electricityFee,
         
-        // 水表
         lastWaterReading: room.lastWaterReading || 0,
         waterReading: Number(this.data.waterReading) || 0,
         waterUsage: this.data.waterUsage,

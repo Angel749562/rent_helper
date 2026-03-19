@@ -37,15 +37,15 @@
       <view class="room-details">
         <view class="detail-row">
           <text>房租：{{room.baseRent}}元/月</text>
-          <text>电价：{{room.electricityPrice || 0.8}}元/度</text>
+          <text>电价：1元/度</text>
         </view>
         <view class="detail-row">
-          <text>水价：{{room.waterPrice || 3.5}}元/吨</text>
+          <text>水价：3元/吨</text>
           <text>上次电表：{{room.lastElectricityReading || 0}}度</text>
         </view>
         <view class="detail-row">
           <text>上次水表：{{room.lastWaterReading || 0}}吨</text>
-          <text wx:if="{{room.lastReadingDate}}">{{room.lastReadingDate}}</text>
+          <text wx:if="{{room.lastReadingDate}}">上次抄表：{{room.lastReadingDate}}</text>
         </view>
       </view>
 
@@ -90,11 +90,13 @@
         </view>
         <view class="form-item">
           <text class="label">电价(元/度)</text>
-          <input type="digit" placeholder="默认0.8" bindinput="onInput" data-field="electricityPrice" value="{{newRoom.electricityPrice}}" />
+          <input type="digit" placeholder="默认1" bindinput="onInput" data-field="electricityPrice" value="{{newRoom.electricityPrice}}" disabled="true" />
+          <text class="note">固定1元/度</text>
         </view>
         <view class="form-item">
           <text class="label">水价(元/吨)</text>
-          <input type="digit" placeholder="默认3.5" bindinput="onInput" data-field="waterPrice" value="{{newRoom.waterPrice}}" />
+          <input type="digit" placeholder="默认3" bindinput="onInput" data-field="waterPrice" value="{{newRoom.waterPrice}}" disabled="true" />
+          <text class="note">固定3元/吨</text>
         </view>
       </view>
 

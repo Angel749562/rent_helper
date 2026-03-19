@@ -2,7 +2,7 @@
 Page({
     data: {
       rooms: [],
-      displayRooms: [],  // 当前显示的房间
+      displayRooms: [],
       buildings: ['一号楼', '二号楼', '三号楼'],
       currentBuilding: '全部',
       totalCount: 0,
@@ -12,8 +12,8 @@ Page({
         roomNumber: '',
         building: '一号楼',
         baseRent: '',
-        electricityPrice: '0.8',
-        waterPrice: '3.5'
+        electricityPrice: '1',  // 默认1元
+        waterPrice: '3'         // 默认3元
       }
     },
   
@@ -53,7 +53,6 @@ Page({
           totalCount: rooms.length
         })
         
-        // 应用当前筛选
         this.filterRooms()
       }).catch(err => {
         console.error('加载房间失败:', err)
@@ -88,8 +87,8 @@ Page({
           roomNumber: '',
           building: '一号楼',
           baseRent: '',
-          electricityPrice: '0.8',
-          waterPrice: '3.5'
+          electricityPrice: '1',
+          waterPrice: '3'
         }
       })
     },
@@ -127,8 +126,8 @@ Page({
         roomNumber: this.data.newRoom.roomNumber,
         building: this.data.newRoom.building,
         baseRent: Number(this.data.newRoom.baseRent),
-        electricityPrice: Number(this.data.newRoom.electricityPrice) || 0.8,
-        waterPrice: Number(this.data.newRoom.waterPrice) || 3.5,
+        electricityPrice: 1,  // 固定1元
+        waterPrice: 3,        // 固定3元
         lastElectricityReading: 0,
         lastWaterReading: 0,
         createTime: db.serverDate()

@@ -1,12 +1,25 @@
-/* 添加到原有样式后面 */
-.header {
+/* pages/index/index.wxss */
+.container {
+    padding: 30rpx;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30rpx;
-    padding: 20rpx;
+    padding: 20rpx 30rpx;
     background-color: #fff;
     border-radius: 16rpx;
+  }
+  
+  .title {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #333;
   }
   
   .test-btn {
@@ -16,6 +29,48 @@
     height: 50rpx;
     line-height: 50rpx;
     border-radius: 25rpx;
+  }
+  
+  .form-item {
+    background-color: #fff;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 30rpx;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+  }
+  
+  .label {
+    width: 150rpx;
+    font-size: 32rpx;
+    color: #333;
+  }
+  
+  .form-item input, .picker {
+    flex: 1;
+    font-size: 32rpx;
+    color: #666;
+  }
+  
+  .info-card {
+    background-color: #f8f9fa;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 30rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+  }
+  
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15rpx;
+    font-size: 30rpx;
+    color: #666;
+  }
+  
+  .info-row:last-child {
+    margin-bottom: 0;
   }
   
   .calc-card {
@@ -44,12 +99,19 @@
   }
   
   .calc-item .label {
-    width: auto;
     color: #666;
+    width: auto;
   }
   
   .calc-item .value {
     color: #333;
+  }
+  
+  .calc-item input {
+    text-align: right;
+    border-bottom: 2rpx solid #e0e0e0;
+    padding: 10rpx 0;
+    width: 200rpx;
   }
   
   .calc-item.result {
@@ -64,28 +126,73 @@
     font-weight: bold;
   }
   
-  .calc-item input {
-    text-align: right;
-    border-bottom: 2rpx solid #e0e0e0;
-    padding: 10rpx 0;
-    width: 200rpx;
-  }
-  
-  .info-card {
-    background-color: #f8f9fa;
+  .total-card {
+    background-color: #fff;
     border-radius: 16rpx;
     padding: 30rpx;
     margin-bottom: 30rpx;
-  }
-  
-  .info-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15rpx;
+    align-items: center;
+    box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+  }
+  
+  .total-label {
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .total-amount {
+    font-size: 48rpx;
+    font-weight: bold;
+    color: #ff6b6b;
+  }
+  
+  .payment-section {
+    background-color: #fff;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 30rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+  }
+  
+  .payment-options {
+    display: flex;
+    margin-top: 20rpx;
+    gap: 20rpx;
+  }
+  
+  .payment-option {
+    flex: 1;
+    text-align: center;
+    padding: 20rpx;
+    background-color: #f5f5f5;
+    border-radius: 12rpx;
     font-size: 30rpx;
     color: #666;
   }
   
-  .info-row:last-child {
-    margin-bottom: 0;
+  .payment-option.active {
+    background-color: #07c160;
+    color: #fff;
+  }
+  
+  .save-btn {
+    width: 100%;
+    height: 88rpx;
+    line-height: 88rpx;
+    background-color: #07c160 !important;
+    color: #fff !important;
+    font-size: 36rpx;
+    border-radius: 44rpx;
+    margin-top: 20rpx;
+    box-shadow: 0 4rpx 10rpx rgba(7, 193, 96, 0.3);
+  }
+  
+  .empty-tip {
+    text-align: center;
+    padding: 100rpx;
+    color: #999;
+    font-size: 28rpx;
   }

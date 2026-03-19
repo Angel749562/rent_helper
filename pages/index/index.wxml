@@ -1,27 +1,137 @@
-<!--index.wxml-->
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-        <view wx:else> 请使用2.10.4及以上版本基础库 </view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      </block>
+<!-- pages/index/index.wxml -->
+<view class="container">
+  <view class="header">
+    <text class="title">📝 抄表收租</text>
+    <button class="test-btn" size="mini" bindtap="fillTestData">测试</button>
+  </view>
+
+  <!-- 房间选择 -->
+  <view class="form-item">
+    <text class="label">🏠 房间号</text>
+    <picker 
+      mode="selector" 
+      range="{{rooms}}" 
+      range-key="roomNumber" 
+      value="{{roomIndex}}" 
+      bindchange="onRoomChange"
+    >
+      <view class="picker">
+        <text wx:if="{{selectedRoom}}">{{selectedRoom.roomNumber}} ({{selectedRoom.building}}) ▼</text>
+        <text wx:else>请选择房间 ▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 租户信息 -->
+  <view class="info-card" wx:if="{{selectedRoom}}">
+    <view class="info-row">
+      <text>房租：{{selectedRoom.baseRent}}元/月</text>
     </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
+    <view class="info-row">
+      <text>电价：1元/度</text>
+      <text>水价：3元/吨</text>
+    </view>
+    <view class="info-row">
+      <text>上次电表：{{selectedRoom.lastElectricityReading || 0}}度</text>
+      <text>上次水表：{{selectedRoom.lastWaterReading || 0}}吨</text>
     </view>
   </view>
-</scroll-view>
+
+  <!-- 电费计算 -->
+  <view class="calc-card" wx:if="{{selectedRoom}}">
+    <view class="calc-title">⚡ 电费计算 (1元/度)</view>
+    <view class="calc-item">
+      <text class="label">上月电表</text>
+      <text class="value">{{selectedRoom.lastElectricityReading || 0}} 度</text>
+    </view>
+    <view class="calc-item">
+      <text class="label">本月电表</text>
+      <input 
+        type="digit" 
+        placeholder="请输入本月读数" 
+        bindinput="onElectricityInput" 
+        value="{{electricityReading}}"
+      />
+    </view>
+    <view class="calc-item result" wx:if="{{electricityUsage > 0}}">
+      <text class="label">用电量</text>
+      <text class="value">{{electricityUsage}} 度</text>
+    </view>
+    <view class="calc-item result" wx:if="{{electricityFee > 0}}">
+      <text class="label">电费</text>
+      <text class="value fee">{{electricityFee}} 元</text>
+    </view>
+  </view>
+
+  <!-- 水费计算 -->
+  <view class="calc-card" wx:if="{{selectedRoom}}">
+    <view class="calc-title">💧 水费计算 (3元/吨)</view>
+    <view class="calc-item">
+      <text class="label">上月水表</text>
+      <text class="value">{{selectedRoom.lastWaterReading || 0}} 吨</text>
+    </view>
+    <view class="calc-item">
+      <text class="label">本月水表</text>
+      <input 
+        type="digit" 
+        placeholder="请输入本月读数" 
+        bindinput="onWaterInput" 
+        value="{{waterReading}}"
+      />
+    </view>
+    <view class="calc-item result" wx:if="{{waterUsage > 0}}">
+      <text class="label">用水量</text>
+      <text class="value">{{waterUsage}} 吨</text>
+    </view>
+    <view class="calc-item result" wx:if="{{waterFee > 0}}">
+      <text class="label">水费</text>
+      <text class="value fee">{{waterFee}} 元</text>
+    </view>
+  </view>
+
+  <!-- 总计 -->
+  <view class="total-card" wx:if="{{selectedRoom}}">
+    <text class="total-label">本月总计</text>
+    <text class="total-amount">{{totalAmount}} 元</text>
+  </view>
+
+  <!-- 支付方式 -->
+  <view class="payment-section" wx:if="{{selectedRoom}}">
+    <text class="label">💰 支付方式</text>
+    <view class="payment-options">
+      <view 
+        class="payment-option {{paymentMethod === '现金' ? 'active' : ''}}" 
+        bindtap="onPaymentChange" 
+        data-method="现金"
+      >现金</view>
+      <view 
+        class="payment-option {{paymentMethod === '微信' ? 'active' : ''}}" 
+        bindtap="onPaymentChange" 
+        data-method="微信"
+      >微信</view>
+      <view 
+        class="payment-option {{paymentMethod === '支付宝' ? 'active' : ''}}" 
+        bindtap="onPaymentChange" 
+        data-method="支付宝"
+      >支付宝</view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="form-item" wx:if="{{selectedRoom}}">
+    <text class="label">📝 备注</text>
+    <input placeholder="选填" bindinput="onNotesInput" value="{{notes}}" />
+  </view>
+
+  <!-- 保存按钮 -->
+  <button 
+    class="save-btn" 
+    bindtap="saveRecord" 
+    wx:if="{{selectedRoom}}"
+  >✓ 保存记录</button>
+
+  <!-- 未选择房间时的提示 -->
+  <view class="empty-tip" wx:else>
+    <text>请先在房间管理中添加入住的房间</text>
+  </view>
+</view>
