@@ -1,0 +1,91 @@
+/* 添加到原有样式后面 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30rpx;
+    padding: 20rpx;
+    background-color: #fff;
+    border-radius: 16rpx;
+  }
+  
+  .test-btn {
+    background-color: #f0f0f0 !important;
+    color: #666 !important;
+    font-size: 24rpx;
+    height: 50rpx;
+    line-height: 50rpx;
+    border-radius: 25rpx;
+  }
+  
+  .calc-card {
+    background-color: #fff;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 30rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+  }
+  
+  .calc-title {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20rpx;
+    padding-bottom: 20rpx;
+    border-bottom: 2rpx solid #f0f0f0;
+  }
+  
+  .calc-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+    font-size: 30rpx;
+  }
+  
+  .calc-item .label {
+    width: auto;
+    color: #666;
+  }
+  
+  .calc-item .value {
+    color: #333;
+  }
+  
+  .calc-item.result {
+    background-color: #f8f9fa;
+    padding: 15rpx 20rpx;
+    border-radius: 10rpx;
+    margin-top: 10rpx;
+  }
+  
+  .calc-item.result .fee {
+    color: #ff6b6b;
+    font-weight: bold;
+  }
+  
+  .calc-item input {
+    text-align: right;
+    border-bottom: 2rpx solid #e0e0e0;
+    padding: 10rpx 0;
+    width: 200rpx;
+  }
+  
+  .info-card {
+    background-color: #f8f9fa;
+    border-radius: 16rpx;
+    padding: 30rpx;
+    margin-bottom: 30rpx;
+  }
+  
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15rpx;
+    font-size: 30rpx;
+    color: #666;
+  }
+  
+  .info-row:last-child {
+    margin-bottom: 0;
+  }

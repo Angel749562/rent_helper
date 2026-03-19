@@ -1,0 +1,107 @@
+<!-- pages/rooms/rooms.wxml -->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <text class="title">🏠 房间列表</text>
+    <button class="add-btn" size="mini" bindtap="showAddModal">+ 新增房间</button>
+  </view>
+
+  <!-- 楼栋筛选 -->
+  <scroll-view class="building-tabs" scroll-x>
+    <view 
+      class="building-tab {{currentBuilding === '全部' ? 'active' : ''}}"
+      bindtap="filterByBuilding" data-building="全部"
+    >
+      全部({{totalCount}})
+    </view>
+    <block wx:for="{{buildings}}" wx:key="index">
+      <view 
+        class="building-tab {{currentBuilding === item ? 'active' : ''}}"
+        bindtap="filterByBuilding" data-building="{{item}}"
+      >
+        {{item}}({{buildingCounts[item] || 0}})
+      </view>
+    </block>
+  </scroll-view>
+
+  <!-- 房间列表 -->
+  <view class="room-list">
+    <view class="room-card" wx:for="{{displayRooms}}" wx:key="_id" wx:for-item="room">
+      <view class="room-header">
+        <view class="room-info">
+          <text class="room-number">{{room.roomNumber}}</text>
+          <text class="building-tag">{{room.building}}</text>
+        </view>
+      </view>
+
+      <view class="room-details">
+        <view class="detail-row">
+          <text>房租：{{room.baseRent}}元/月</text>
+          <text>电价：{{room.electricityPrice || 0.8}}元/度</text>
+        </view>
+        <view class="detail-row">
+          <text>水价：{{room.waterPrice || 3.5}}元/吨</text>
+          <text>上次电表：{{room.lastElectricityReading || 0}}度</text>
+        </view>
+        <view class="detail-row">
+          <text>上次水表：{{room.lastWaterReading || 0}}吨</text>
+          <text wx:if="{{room.lastReadingDate}}">{{room.lastReadingDate}}</text>
+        </view>
+      </view>
+
+      <view class="room-actions">
+        <button class="collect-btn" bindtap="goToCollect" data-room="{{room}}">
+          去收租
+        </button>
+        <button class="delete-btn" bindtap="deleteRoom" data-id="{{room._id}}">
+          删除
+        </button>
+      </view>
+    </view>
+    
+    <!-- 空状态提示 -->
+    <view class="empty-tip" wx:if="{{displayRooms.length === 0}}">
+      <text>暂无房间，请点击右上角新增</text>
+    </view>
+  </view>
+
+  <!-- 新增房间弹窗 -->
+  <view class="modal" wx:if="{{showAddModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text>新增房间</text>
+        <text class="close" bindtap="hideModal">✕</text>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="label">*房间号</text>
+          <input placeholder="例如：101、花园一" bindinput="onInput" data-field="roomNumber" value="{{newRoom.roomNumber}}" />
+        </view>
+        <view class="form-item">
+          <text class="label">*所属楼栋</text>
+          <picker range="{{buildings}}" bindchange="onBuildingChange">
+            <view class="picker">{{newRoom.building}} ▼</view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <text class="label">*基础房租</text>
+          <input type="digit" placeholder="月租金" bindinput="onInput" data-field="baseRent" value="{{newRoom.baseRent}}" />
+        </view>
+        <view class="form-item">
+          <text class="label">电价(元/度)</text>
+          <input type="digit" placeholder="默认0.8" bindinput="onInput" data-field="electricityPrice" value="{{newRoom.electricityPrice}}" />
+        </view>
+        <view class="form-item">
+          <text class="label">水价(元/吨)</text>
+          <input type="digit" placeholder="默认3.5" bindinput="onInput" data-field="waterPrice" value="{{newRoom.waterPrice}}" />
+        </view>
+      </view>
+
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="hideModal">取消</button>
+        <button class="confirm-btn" bindtap="saveRoom">保存</button>
+      </view>
+    </view>
+  </view>
+</view>
