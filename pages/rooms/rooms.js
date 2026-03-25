@@ -188,3 +188,12 @@ Page({
       })
     }
   })
+  
+  // 代码片段：更新房间最新读数
+return db.collection('rooms').doc(room._id).update({
+    data: {
+      lastElectricityReading: elecVal || Number(room.lastElectricityReading) || 0,
+      lastWaterReading: waterVal || Number(room.lastWaterReading) || 0,
+      lastReadingDate: readingDate
+    }
+  })
